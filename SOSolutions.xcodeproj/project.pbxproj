@@ -1,0 +1,665 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0714EE722F4E843100B25F40 /* TwilioVoice in Frameworks */ = {isa = PBXBuildFile; productRef = 0714EE712F4E843100B25F40 /* TwilioVoice */; };
+		0714EE742F4E843100B25F40 /* TwilioVoice-static in Frameworks */ = {isa = PBXBuildFile; productRef = 0714EE732F4E843100B25F40 /* TwilioVoice-static */; };
+		07DC8D8D2F3C2C7200E8A644 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 07DC8D8C2F3C2C7200E8A644 /* MLXLLM */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		207006C62F2CF1A7002F7D5E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 207006AC2F2CF1A6002F7D5E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 207006B32F2CF1A6002F7D5E;
+			remoteInfo = SOSolutions;
+		};
+		207006D02F2CF1A7002F7D5E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 207006AC2F2CF1A6002F7D5E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 207006B32F2CF1A6002F7D5E;
+			remoteInfo = SOSolutions;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0758EFE32F3C2A0B00044AA8 /* llama.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = llama.xcframework; path = "../../../llama.cpp/build-apple/llama.xcframework"; sourceTree = "<group>"; };
+		207006B42F2CF1A6002F7D5E /* SOSolutions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SOSolutions.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		207006C52F2CF1A7002F7D5E /* SOSolutionsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SOSolutionsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		207006CF2F2CF1A7002F7D5E /* SOSolutionsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SOSolutionsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		207006D72F2CF1A7002F7D5E /* Exceptions for "SOSolutions" folder in "SOSolutions" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 207006B32F2CF1A6002F7D5E /* SOSolutions */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		207006B62F2CF1A6002F7D5E /* SOSolutions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				207006D72F2CF1A7002F7D5E /* Exceptions for "SOSolutions" folder in "SOSolutions" target */,
+			);
+			path = SOSolutions;
+			sourceTree = "<group>";
+		};
+		207006C82F2CF1A7002F7D5E /* SOSolutionsTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SOSolutionsTests;
+			sourceTree = "<group>";
+		};
+		207006D22F2CF1A7002F7D5E /* SOSolutionsUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SOSolutionsUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		207006B12F2CF1A6002F7D5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07DC8D8D2F3C2C7200E8A644 /* MLXLLM in Frameworks */,
+				0714EE742F4E843100B25F40 /* TwilioVoice-static in Frameworks */,
+				0714EE722F4E843100B25F40 /* TwilioVoice in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006C22F2CF1A7002F7D5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006CC2F2CF1A7002F7D5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0758EFE22F3C2A0B00044AA8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0758EFE32F3C2A0B00044AA8 /* llama.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		207006AB2F2CF1A6002F7D5E = {
+			isa = PBXGroup;
+			children = (
+				207006B62F2CF1A6002F7D5E /* SOSolutions */,
+				207006C82F2CF1A7002F7D5E /* SOSolutionsTests */,
+				207006D22F2CF1A7002F7D5E /* SOSolutionsUITests */,
+				0758EFE22F3C2A0B00044AA8 /* Frameworks */,
+				207006B52F2CF1A6002F7D5E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		207006B52F2CF1A6002F7D5E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				207006B42F2CF1A6002F7D5E /* SOSolutions.app */,
+				207006C52F2CF1A7002F7D5E /* SOSolutionsTests.xctest */,
+				207006CF2F2CF1A7002F7D5E /* SOSolutionsUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		207006B32F2CF1A6002F7D5E /* SOSolutions */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 207006D82F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutions" */;
+			buildPhases = (
+				207006B02F2CF1A6002F7D5E /* Sources */,
+				207006B12F2CF1A6002F7D5E /* Frameworks */,
+				207006B22F2CF1A6002F7D5E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				207006B62F2CF1A6002F7D5E /* SOSolutions */,
+			);
+			name = SOSolutions;
+			packageProductDependencies = (
+				07DC8D8C2F3C2C7200E8A644 /* MLXLLM */,
+				0714EE712F4E843100B25F40 /* TwilioVoice */,
+				0714EE732F4E843100B25F40 /* TwilioVoice-static */,
+			);
+			productName = SOSolutions;
+			productReference = 207006B42F2CF1A6002F7D5E /* SOSolutions.app */;
+			productType = "com.apple.product-type.application";
+		};
+		207006C42F2CF1A7002F7D5E /* SOSolutionsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 207006DD2F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutionsTests" */;
+			buildPhases = (
+				207006C12F2CF1A7002F7D5E /* Sources */,
+				207006C22F2CF1A7002F7D5E /* Frameworks */,
+				207006C32F2CF1A7002F7D5E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				207006C72F2CF1A7002F7D5E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				207006C82F2CF1A7002F7D5E /* SOSolutionsTests */,
+			);
+			name = SOSolutionsTests;
+			packageProductDependencies = (
+			);
+			productName = SOSolutionsTests;
+			productReference = 207006C52F2CF1A7002F7D5E /* SOSolutionsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		207006CE2F2CF1A7002F7D5E /* SOSolutionsUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 207006E02F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutionsUITests" */;
+			buildPhases = (
+				207006CB2F2CF1A7002F7D5E /* Sources */,
+				207006CC2F2CF1A7002F7D5E /* Frameworks */,
+				207006CD2F2CF1A7002F7D5E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				207006D12F2CF1A7002F7D5E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				207006D22F2CF1A7002F7D5E /* SOSolutionsUITests */,
+			);
+			name = SOSolutionsUITests;
+			packageProductDependencies = (
+			);
+			productName = SOSolutionsUITests;
+			productReference = 207006CF2F2CF1A7002F7D5E /* SOSolutionsUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		207006AC2F2CF1A6002F7D5E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					207006B32F2CF1A6002F7D5E = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					207006C42F2CF1A7002F7D5E = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 207006B32F2CF1A6002F7D5E;
+					};
+					207006CE2F2CF1A7002F7D5E = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 207006B32F2CF1A6002F7D5E;
+					};
+				};
+			};
+			buildConfigurationList = 207006AF2F2CF1A6002F7D5E /* Build configuration list for PBXProject "SOSolutions" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 207006AB2F2CF1A6002F7D5E;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				07DC8D8B2F3C2C7200E8A644 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+				0714EE702F4E843100B25F40 /* XCRemoteSwiftPackageReference "twilio-voice-ios" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 207006B52F2CF1A6002F7D5E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				207006B32F2CF1A6002F7D5E /* SOSolutions */,
+				207006C42F2CF1A7002F7D5E /* SOSolutionsTests */,
+				207006CE2F2CF1A7002F7D5E /* SOSolutionsUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		207006B22F2CF1A6002F7D5E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006C32F2CF1A7002F7D5E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006CD2F2CF1A7002F7D5E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		207006B02F2CF1A6002F7D5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006C12F2CF1A7002F7D5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		207006CB2F2CF1A7002F7D5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		207006C72F2CF1A7002F7D5E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 207006B32F2CF1A6002F7D5E /* SOSolutions */;
+			targetProxy = 207006C62F2CF1A7002F7D5E /* PBXContainerItemProxy */;
+		};
+		207006D12F2CF1A7002F7D5E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 207006B32F2CF1A6002F7D5E /* SOSolutions */;
+			targetProxy = 207006D02F2CF1A7002F7D5E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		207006D92F2CF1A7002F7D5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SOSolutions/SOSolutionsDebug.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6YJTA2SMY;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SOSolutions/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record speech.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to convert speech to text.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutions;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		207006DA2F2CF1A7002F7D5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SOSolutions/SOSolutions.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D6YJTA2SMY;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SOSolutions/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record speech.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to convert speech to text.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutions;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		207006DB2F2CF1A7002F7D5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 207006B62F2CF1A6002F7D5E /* SOSolutions */;
+			baseConfigurationReferenceRelativePath = Configs/Debug.xcconfig;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		207006DC2F2CF1A7002F7D5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 207006B62F2CF1A6002F7D5E /* SOSolutions */;
+			baseConfigurationReferenceRelativePath = Configs/Config.xcconfig;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		207006DE2F2CF1A7002F7D5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutionsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SOSolutions.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SOSolutions";
+			};
+			name = Debug;
+		};
+		207006DF2F2CF1A7002F7D5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutionsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SOSolutions.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SOSolutions";
+			};
+			name = Release;
+		};
+		207006E12F2CF1A7002F7D5E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutionsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SOSolutions;
+			};
+			name = Debug;
+		};
+		207006E22F2CF1A7002F7D5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = SOSolutions.SOSolutionsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SOSolutions;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		207006AF2F2CF1A6002F7D5E /* Build configuration list for PBXProject "SOSolutions" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				207006DB2F2CF1A7002F7D5E /* Debug */,
+				207006DC2F2CF1A7002F7D5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		207006D82F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutions" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				207006D92F2CF1A7002F7D5E /* Debug */,
+				207006DA2F2CF1A7002F7D5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		207006DD2F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutionsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				207006DE2F2CF1A7002F7D5E /* Debug */,
+				207006DF2F2CF1A7002F7D5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		207006E02F2CF1A7002F7D5E /* Build configuration list for PBXNativeTarget "SOSolutionsUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				207006E12F2CF1A7002F7D5E /* Debug */,
+				207006E22F2CF1A7002F7D5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0714EE702F4E843100B25F40 /* XCRemoteSwiftPackageReference "twilio-voice-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twilio/twilio-voice-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.13.6;
+			};
+		};
+		07DC8D8B2F3C2C7200E8A644 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.29.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0714EE712F4E843100B25F40 /* TwilioVoice */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0714EE702F4E843100B25F40 /* XCRemoteSwiftPackageReference "twilio-voice-ios" */;
+			productName = TwilioVoice;
+		};
+		0714EE732F4E843100B25F40 /* TwilioVoice-static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0714EE702F4E843100B25F40 /* XCRemoteSwiftPackageReference "twilio-voice-ios" */;
+			productName = "TwilioVoice-static";
+		};
+		07DC8D8C2F3C2C7200E8A644 /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 07DC8D8B2F3C2C7200E8A644 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 207006AC2F2CF1A6002F7D5E /* Project object */;
+}
