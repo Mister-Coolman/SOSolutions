@@ -138,15 +138,60 @@ import PhotosUI
 //    }
 //}
 
+// MARK: - Camera Picker (UIImagePickerController wrapper)
+
+struct CameraPicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    @Environment(\.dismiss) private var dismiss
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: CameraPicker
+
+        init(_ parent: CameraPicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            if let uiImage = info[.originalImage] as? UIImage {
+                parent.image = uiImage
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
+    }
+}
+
+// MARK: - ContentView
 
 struct ContentView: View {
-    
+
     @State private var selectedItem: PhotosPickerItem?
     @State private var image: UIImage?
     @State private var descriptions: [String] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
-    
+    @State private var showCamera = false
+    @State private var cameraImage: UIImage?
+
     var body: some View {
         NavigationView {
             VStack {
@@ -159,13 +204,11 @@ struct ContentView: View {
                 } else {
                     Text("No image selected.")
                 }
-                
-                PhotosPicker(
-                    selection: $selectedItem,
-                    matching: .images,
-                    preferredItemEncoding: .automatic,
-                    photoLibrary: .shared()
-                ) {
+
+                // Camera button
+                Button {
+                    showCamera = true
+                } label: {
                     Label("Take Picture", systemImage: "camera.fill")
                         .font(.headline)
                         .padding()
@@ -174,46 +217,77 @@ struct ContentView: View {
                         .foregroundStyle(Color.white)
                         .cornerRadius(12)
                 }
-                
+
+                // Photo library picker
+                PhotosPicker(
+                    selection: $selectedItem,
+                    matching: .images,
+                    preferredItemEncoding: .automatic,
+                    photoLibrary: .shared()
+                ) {
+                    Label("Choose from Library", systemImage: "photo.on.rectangle")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.secondary.opacity(0.2))
+                        .foregroundStyle(Color.primary)
+                        .cornerRadius(12)
+                }
+
                 if isLoading {
                     ProgressView("Analyzing image...")
                         .padding()
                 }
-                
+
                 if let errorMessage {
                     Text(errorMessage)
                         .foregroundStyle(Color.red)
                 }
-                
+
                 if !descriptions.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Emergency Descriptions")
-                            .font(.headline)
-                        ForEach(descriptions, id: \.self) { description in
-                            Text(description)
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Emergency Descriptions")
+                                .font(.headline)
+                            ForEach(descriptions, id: \.self) { description in
+                                Text(description)
+                                    .lineLimit(nil)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                
+
                 Spacer()
             }
             .padding()
             .navigationTitle(Text("Emergency Image Analyzer"))
         }
+        // Handle photo library selection
         .onChange(of: selectedItem) { newValue in
             Task {
                 await loadImage(from: newValue)
             }
         }
+        // Handle camera capture
+        .onChange(of: cameraImage) { newImage in
+            guard let newImage else { return }
+            image = newImage
+            Task { await analyze(newImage) }
+        }
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPicker(image: $cameraImage)
+                .ignoresSafeArea()
+        }
     }
-    
+
     private func loadImage(from item: PhotosPickerItem?) async {
         guard let item else { return }
-        
+
         do {
             if let data = try await item.loadTransferable(type: Data.self),
-               let uiImage = UIImage(data: data){
+               let uiImage = UIImage(data: data) {
                 image = uiImage
                 await analyze(uiImage)
             }
@@ -221,19 +295,18 @@ struct ContentView: View {
             errorMessage = "Failed to load image."
         }
     }
-    
+
     private func analyze(_ uiImage: UIImage) async {
         isLoading = true
         errorMessage = nil
         descriptions = []
-        
+
         do {
             descriptions = try await FireworksService.analyzeImage(uiImage)
         } catch {
             errorMessage = "Failed to analyze image."
         }
-        
+
         isLoading = false
     }
-    
 }
