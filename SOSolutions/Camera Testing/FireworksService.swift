@@ -17,8 +17,8 @@ struct FireworksService {
         }
         
         let base64Image = imageData.base64EncodedString()
-        
-        let url = URL(string: "https://14ff-2600-387-15-5b17-00-b.ngrok-free.app/fireworks/chat")!
+
+        let url = URL(string: "\(SecretsHelper.getNgrokURL())/fireworks/chat")!
         
         let prompt = """
             Analyze this image and generate EXACTLY 3 concise descriptions helpful for 911 emergency

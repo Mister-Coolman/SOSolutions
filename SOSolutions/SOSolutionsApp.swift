@@ -13,12 +13,12 @@ struct SOSolutionsApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            rootView()
-            ContentView()
+           rootView()
+            //ContentView()
         }
     }
 }
 
-//#Preview {
-//    rootView()
-//}
+#Preview {
+    rootView()
+}

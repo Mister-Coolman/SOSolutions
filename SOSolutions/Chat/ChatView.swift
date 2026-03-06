@@ -5,6 +5,7 @@
 
 import SwiftUI
 import TwilioVoice
+import PhotosUI
 
 struct Message: Identifiable, Equatable {
     let id = UUID()
@@ -20,7 +21,15 @@ struct ChatView: View {
 
     @State private var messages: [Message] = []
     @State private var inputText: String = ""
-
+    
+    // For camera
+    @State private var image: UIImage?
+    @State private var descriptions: [String] = []
+    @State private var errorMessage: String?
+    @State private var isLoading = false
+    @State private var showCamera: Bool = false
+    @State private var cameraImage: UIImage?
+    
     // Transcription accumulation
     @State private var currentTranscript: String = ""
     @State private var silenceTimer: Timer? = nil
@@ -45,16 +54,17 @@ struct ChatView: View {
 
                     Spacer()
 
-                    Button(action: {
-                        voiceManager.toggleMute()
-                    }) {
-                        Image(systemName: voiceManager.isMuted ? "mic.slash.fill" : "mic.fill")
+                    Button {
+                        showCamera = true
+                    } label: {
+                        Image(systemName: "camera.fill")
                             .foregroundStyle(Color.white)
                             .padding()
-                            .background(voiceManager.isMuted ? Color.red : Color.blue)
+                            .background(Color.blue)
                             .clipShape(Circle())
+                            .font(.system(size: 35))
                     }
-                    .disabled(!voiceManager.isConnected)
+//                    .disabled(!voiceManager.isConnected)
                 }
                 .padding()
                 .overlay(
@@ -63,6 +73,15 @@ struct ChatView: View {
                         .frame(height: 4),
                     alignment: .bottom
                 )
+                .onChange(of: cameraImage) { oldImage, newImage in
+                    guard let newImage else { return }
+                    image = newImage
+                    Task { await analyze(newImage) }
+                }
+                .fullScreenCover(isPresented: $showCamera) {
+                    CameraPicker(image: $cameraImage)
+                        .ignoresSafeArea()
+                }
 
                 // MARK: - Speaking Banner
                 if isSpeaking {
@@ -211,5 +230,20 @@ struct ChatView: View {
         inputText = ""
         messages.append(Message(text: text, isUser: true))
         voiceManager.speak(text)
+    }
+    
+    // Send crap to Fireworks
+    private func analyze(_ uiImage: UIImage) async {
+        isLoading = true
+        errorMessage = nil
+        descriptions = []
+
+        do {
+            descriptions = try await FireworksService.analyzeImage(uiImage)
+        } catch {
+            errorMessage = "Failed to analyze image."
+        }
+
+        isLoading = false
     }
 }
