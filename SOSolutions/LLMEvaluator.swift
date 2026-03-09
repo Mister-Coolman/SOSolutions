@@ -64,7 +64,7 @@ class LLMEvaluator {
         running = true
         self.output = ""
 
-        let systemPrompt: String = type == 1 ? "You are a helpful assistant. Act like a helpful chatbot, answering the user's queries with as much accuracy as possible." : "Rewrite the message so that a 4th grade student can understand it. STRICT RULES: Keep every fact exactly the same. Do not change meaning. Do not add or remove information. Do not summarize. Do not explain extra details. Use simple words. Keep numbers, names, and addresses unchanged. Output ONLY the rewritten message."
+        let systemPrompt: String = "Rewrite the message so that a 3rd grade student can understand it. STRICT RULES: Keep every fact exactly the same. Do not change meaning. Do not add or remove information. Do not summarize. Do not explain extra details. Use simple words. Keep numbers, names, and addresses unchanged. Output ONLY the rewritten message."
         
         do {
             let modelContainer = try await load()

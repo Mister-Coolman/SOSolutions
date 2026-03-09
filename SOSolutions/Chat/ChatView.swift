@@ -9,8 +9,10 @@ import PhotosUI
 
 struct Message: Identifiable, Equatable {
     let id = UUID()
-    let text: String
+    var text: String
+    var simpleText: String? = nil
     let isUser: Bool        // true = you (sent via TTS), false = callee (transcribed)
+    var showSimple: Bool = false
 }
 
 struct ChatView: View {
@@ -35,6 +37,9 @@ struct ChatView: View {
     @State private var silenceTimer: Timer? = nil
     @State private var isSpeaking: Bool = false
 
+    // LLM Stuff
+    @State var llm = LLMEvaluator()
+    
     var body: some View {
         ZStack {
             VStack {
@@ -103,7 +108,7 @@ struct ChatView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(alignment: .leading, spacing: 10) {
-                            ForEach(messages) { message in
+                            ForEach($messages) { $message in
                                 HStack {
                                     if message.isUser {
                                         Spacer()
@@ -113,10 +118,13 @@ struct ChatView: View {
                                             .foregroundColor(.white)
                                             .cornerRadius(16)
                                     } else {
-                                        Text(.init(message.text))
+                                        Text((message.showSimple ? message.simpleText : .init(message.text)) ?? .init(message.text))
                                             .padding(10)
                                             .background(Color.gray.opacity(0.2))
                                             .cornerRadius(16)
+                                            .onTapGesture {
+                                                handleMessageTap($message)
+                                            }
                                         Spacer()
                                     }
                                 }
@@ -156,12 +164,13 @@ struct ChatView: View {
                 HStack {
                     TextField("Message", text: $inputText)
                         .textFieldStyle(.roundedBorder)
-                        .disabled(!voiceManager.isConnected || isSpeaking)
+//                        .disabled(!voiceManager.isConnected || isSpeaking)
 
                     Button("Send") {
                         sendMessage()
                     }
-                    .disabled(inputText.isEmpty || !voiceManager.isConnected || isSpeaking)
+                    .disabled(inputText.isEmpty)
+//                    .disabled(inputText.isEmpty || !voiceManager.isConnected || isSpeaking)
                 }
                 .padding()
             }
@@ -225,11 +234,14 @@ struct ChatView: View {
 
     // MARK: - Send Message (TTS via Twilio)
     private func sendMessage() {
-        guard !inputText.isEmpty else { return }
-        let text = inputText
+//        guard !inputText.isEmpty else { return }
+//        let text = inputText
+//        inputText = ""
+//        messages.append(Message(text: text, isUser: true))
+//        voiceManager.speak(text)
+        messages.append(Message(text: inputText, isUser: true))
+        messages.append(Message(text: "John, I need you to stay calm. We are sending an ambulance to your location. Can you tell me if the person is conscious and breathing?", isUser: false))
         inputText = ""
-        messages.append(Message(text: text, isUser: true))
-        voiceManager.speak(text)
     }
     
     // Send crap to Fireworks
@@ -245,5 +257,15 @@ struct ChatView: View {
         }
 
         isLoading = false
+    }
+    
+    private func handleMessageTap(_ message: Binding<Message>) {
+        if (message.simpleText.wrappedValue != nil) {
+            Task {
+                await llm.generate(prompt: message.text.wrappedValue, type: 0)
+            }
+            message.simpleText.wrappedValue = llm.output
+        }
+        message.showSimple.wrappedValue.toggle()
     }
 }
