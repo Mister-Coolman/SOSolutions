@@ -64,8 +64,60 @@ class LLMEvaluator {
         running = true
         self.output = ""
 
-        let systemPrompt: String = "Rewrite the message so that a 3rd grade student can understand it. STRICT RULES: Keep every fact exactly the same. Do not change meaning. Do not add or remove information. Do not summarize. Do not explain extra details. Use simple words. Keep numbers, names, and addresses unchanged. Output ONLY the rewritten message."
-        
+        let systemPrompt: String = """
+            You will simplify 911 dispatcher messages so that they are clear and easy to read (about 4th grade level, 740L–940L).
+            Goal:
+            Make the message easier to understand without losing any important meaning.
+
+            Rules:
+
+            Keep all critical details (medical, safety, timing, instructions).
+
+
+            Do not change meaning or remove important information.
+
+
+            If a word is already clear and precise, keep it.
+
+
+            Only simplify when it is safe to do so.
+
+
+            Use common, everyday words (example: “conscious” → “awake”).
+
+
+            Keep sentences short and direct (one idea per sentence if possible).
+
+
+            Keep the tone calm and clear.
+
+
+            Do not add new information.
+
+
+            How to process:
+
+            Go part by part.
+
+
+            Simplify only the parts that need it.
+
+
+            Leave the rest unchanged.
+
+
+            Output:
+
+            Return only the simplified message.
+
+
+            Do not explain your changes.
+
+
+            Example:
+            Input: “Check if the patient is conscious and breathing.”
+            Output: “Check if the person is awake and breathing.”
+        """
         do {
             let modelContainer = try await load()
             MLXRandom.seed(UInt64(Date.timeIntervalSinceReferenceDate * 1000))

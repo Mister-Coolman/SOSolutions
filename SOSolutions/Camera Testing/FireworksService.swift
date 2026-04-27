@@ -18,25 +18,20 @@ struct FireworksService {
         
         let base64Image = imageData.base64EncodedString()
 
-        let url = URL(string: "\(SecretsHelper.getNgrokURL())/fireworks/chat")!
+        let url = URL(string: "https://sosolutions-server-production.up.railway.app/fireworks/chat")!
         
         let prompt = """
-            Analyze this image and generate EXACTLY 3 concise descriptions helpful for 911 emergency
+            You are responsible for conveying critical information to a 911 dispatcher. You are facilitating communication between members of the deaf community and emergency services. When a user takes an image of their surroundings or other critical information pertaining to the situation, your role is to translate the visual information into text in a manner that is relevant, precise, and does not lose meaning.
+
+            Important rules to follow:
+
+            Focus and understand the image taken by the user, and record ALL critical information pertaining to it (for example, if the image taken is of a laceration, critical information to record should be approximate laceration depth, height, placement, blood-loss level, etc.)
+
+            If unsure (<70% confident) about the identity of an object, do not lie or hallucinate, say you are unsure. The goal of this prompt is to ensure the safety of the user in life-or-death scenarios.
+
+            Return ONLY a numbered list of three descriptions that follow the guidelines listed above exactly. Each description should adhere to all of the guidelines, but they must use different wording. Do not return three identical statements. Do not return statements that do not contain all critical medical, environmental, and social information that pose a threat to the user.
             
-            Focus on:
-            - Visible injuries
-            - Hazards (fire, smoke, weapons, crash damage)
-            - Immediate medical emergency
-            - Environmental risks
-            - Location clues
-            
-            Each description must:
-            - Be 1-2 sentences
-            - Be factual and objective
-            - Avoid speculation and hallucinations
-            - Be clearly actionable
-            
-            Return ONLY a numbered list of 3 items.
+            Limit each explanation to 25-30 words. The most important thing is to ensure that all information returned is accurate. Do NOT lie at all. 
             """
         
         let requestBody: [String: Any] = [

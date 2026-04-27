@@ -6,14 +6,15 @@
 import SwiftUI
 import TwilioVoice
 import PhotosUI
-
-struct Message: Identifiable, Equatable {
-    let id = UUID()
-    var text: String
-    var simpleText: String? = nil
-    let isUser: Bool        // true = you (sent via TTS), false = callee (transcribed)
-    var showSimple: Bool = false
-}
+import RegexBuilder
+//
+//struct Message: Identifiable, Equatable {
+//    let id = UUID()
+//    var text: String
+//    var simpleText: String? = nil
+//    let isUser: Bool        // true = you (sent via TTS), false = callee (transcribed)
+//    var showSimple: Bool = false
+//}
 
 struct ChatView: View {
     @Binding var inChat: Bool
@@ -26,7 +27,10 @@ struct ChatView: View {
     
     // For camera
     @State private var image: UIImage?
+//    @State private var descriptions: [String] = ["This the first emergency description. This description is so tuff. My hand's fingernails are falling off.", "This is the second emergency descrption. Five on C is one of the most intelligent people in the world. He's alive.", "This is the third emergency description. This emergency description deals with rush hour, starring Jackie Chan and Chris Tucker. The next installment in this series is coming soon."]
     @State private var descriptions: [String] = []
+    @State private var currentIndex = 0
+    
     @State private var errorMessage: String?
     @State private var isLoading = false
     @State private var showCamera: Bool = false
@@ -35,8 +39,8 @@ struct ChatView: View {
     // Transcription accumulation
     @State private var currentTranscript: String = ""
     @State private var silenceTimer: Timer? = nil
-    @State private var isSpeaking: Bool = false
 
+    
     // LLM Stuff
     @State var llm = LLMEvaluator()
     
@@ -47,6 +51,7 @@ struct ChatView: View {
                     Button {
                         withAnimation() {
                             inChat = false
+                            voiceManager.hangUp()
                         }
                     } label: {
                         Image(systemName: "phone.down.fill")
@@ -89,22 +94,6 @@ struct ChatView: View {
                 }
 
                 // MARK: - Speaking Banner
-                if isSpeaking {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .scaleEffect(0.8)
-                        Text("Speaking to caller…")
-                            .font(.caption.weight(.medium))
-                            .foregroundColor(.white)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .background(Color.blue)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                }
-
-                Spacer()
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(alignment: .leading, spacing: 10) {
@@ -142,7 +131,6 @@ struct ChatView: View {
                                     Spacer()
                                 }
                             }
-
                             Color.clear
                                 .frame(height: 1)
                                 .id("bottomID")
@@ -160,17 +148,54 @@ struct ChatView: View {
                         }
                     }
                 }
-
+                // Suggested descriptions from image analysis
+                if !descriptions.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Suggestions")
+                                .font(.headline)
+                            
+                            Button {
+                                currentIndex = (currentIndex + 1) % descriptions.count
+                            } label: {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            Spacer()
+                            Button("Dismiss") {
+                                descriptions.removeAll()
+                            }
+                            .font(.subheadline)
+                            .buttonStyle(.plain)
+                        }
+                        Button {
+                            // Populate the chat input with the selected description
+                            inputText = descriptions[currentIndex]
+                            descriptions.removeAll()
+                        } label: {
+                            Text(descriptions[currentIndex])
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .foregroundStyle(.white)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(12)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Color.orange)
+                        .buttonBorderShape(.roundedRectangle(radius: 8.0))
+                    }
+                    .padding(10)
+                }
                 HStack {
                     TextField("Message", text: $inputText)
                         .textFieldStyle(.roundedBorder)
-//                        .disabled(!voiceManager.isConnected || isSpeaking)
+                        .disabled(!voiceManager.isConnected)
 
                     Button("Send") {
                         sendMessage()
                     }
                     .disabled(inputText.isEmpty)
-//                    .disabled(inputText.isEmpty || !voiceManager.isConnected || isSpeaking)
+                    .disabled(inputText.isEmpty || !voiceManager.isConnected)
                 }
                 .padding()
             }
@@ -178,13 +203,12 @@ struct ChatView: View {
         .onAppear {
             startCall()
         }
-        .animation(.easeInOut(duration: 0.2), value: isSpeaking)
     }
 
     // MARK: - Start Call
     private func startCall() {
         voiceManager.fetchToken {
-            voiceManager.makeCall(to: callNumber)
+            voiceManager.makeCall(to: "+15186129216")
         }
 
         voiceManager.onTranscriptionUpdate = { text, isFinal in
@@ -198,12 +222,6 @@ struct ChatView: View {
             if isFinal {
                 silenceTimer?.invalidate()
                 commitTranscript()
-            }
-        }
-
-        voiceManager.onSpeakingStateChange = { speaking in
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isSpeaking = speaking
             }
         }
     }
@@ -234,14 +252,14 @@ struct ChatView: View {
 
     // MARK: - Send Message (TTS via Twilio)
     private func sendMessage() {
-//        guard !inputText.isEmpty else { return }
-//        let text = inputText
-//        inputText = ""
-//        messages.append(Message(text: text, isUser: true))
-//        voiceManager.speak(text)
-        messages.append(Message(text: inputText, isUser: true))
-        messages.append(Message(text: "John, I need you to stay calm. We are sending an ambulance to your location. Can you tell me if the person is conscious and breathing?", isUser: false))
+        guard !inputText.isEmpty else { return }
+        let text = inputText
         inputText = ""
+        messages.append(Message(text: text, isUser: true))
+        voiceManager.speak(text)
+//        messages.append(Message(text: inputText, isUser: true))
+//        messages.append(Message(text: "John, I need you to stay calm. We are sending an ambulance to your location. Can you tell me if the person is conscious and breathing?", isUser: false))
+//        inputText = ""
     }
     
     // Send crap to Fireworks
@@ -260,12 +278,43 @@ struct ChatView: View {
     }
     
     private func handleMessageTap(_ message: Binding<Message>) {
-        if (message.simpleText.wrappedValue != nil) {
+        print("Handling message")
+        if (message.simpleText.wrappedValue == nil) {
             Task {
                 await llm.generate(prompt: message.text.wrappedValue, type: 0)
+                print(llm.output)
+                message.simpleText.wrappedValue = llm.output
             }
-            message.simpleText.wrappedValue = llm.output
         }
         message.showSimple.wrappedValue.toggle()
+        print(llm.output)
+    }
+    private func isModelDownloading() -> Bool {
+        return llm.modelInfo.contains("Downloading")
+    }
+
+    // Helper function to check if model is loaded
+    private func isModelLoaded() -> Bool {
+        return llm.modelInfo.contains("Loaded")
+    }
+
+    // Helper function to extract download progress percentage
+    private func getDownloadProgress() -> Double {
+        let regex = Regex {
+            "Downloading"
+            ZeroOrMore(.any, .reluctant)
+            ": "
+            Capture {
+                OneOrMore(.digit)
+            }
+            "%"
+        }
+
+        if let match = llm.modelInfo.firstMatch(of: regex) {
+            if let percentage = Double(match.1) {
+                return percentage
+            }
+        }
+        return 0
     }
 }
