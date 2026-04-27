@@ -18,7 +18,7 @@ struct rootView: View {
             if !isSignedIn {
                 // SignInView(isSignedIn: $isSignedIn, username: $username)
             } else if inChat {
-                ChatView(inChat: $inChat, callNumber: $callNumber)
+                ChatViewTest(inChat: $inChat, callNumber: $callNumber)
             } else {
                 mainView(username: username, inChat: $inChat, callNumber: $callNumber)
             }
@@ -27,7 +27,6 @@ struct rootView: View {
            //  checkForExistingUser()
         }
     }
-    
 //    private func checkForExistingUser() {
 //        if let storedUserID = KeychainSrvc.load(keychainKeys.appleUserID) {
 //            username = KeychainSrvc.load(keychainKeys.fullName) ?? "User"

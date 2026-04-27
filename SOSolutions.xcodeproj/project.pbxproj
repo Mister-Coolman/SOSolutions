@@ -316,10 +316,12 @@
 				CODE_SIGN_ENTITLEMENTS = SOSolutions/SOSolutionsDebug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D6YJTA2SMY;
+				DEVELOPMENT_TEAM = 9M359PWGY4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SOSolutions/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to do stuff.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record speech.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to convert speech to text.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -352,10 +354,12 @@
 				CODE_SIGN_ENTITLEMENTS = SOSolutions/SOSolutions.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = D6YJTA2SMY;
+				DEVELOPMENT_TEAM = 9M359PWGY4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SOSolutions/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs camera access to do stuff.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record speech.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses speech recognition to convert speech to text.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

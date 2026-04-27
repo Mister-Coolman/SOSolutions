@@ -14,11 +14,30 @@ struct SecretsHelper {
             return []
         }
         
-        // Split by comma and trim whitespace/newlines
         let numbers = numbersString
             .components(separatedBy: ",")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty } // Remove empty entries
+            .map { rawNumber in
+                var number = rawNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                // Remove spaces, dashes, parentheses, etc.
+                number = number.filter { $0.isNumber || $0 == "+" }
+                
+                // If the + was stripped but the number starts with 1 and has 11 digits,
+                // restore it as a US E.164 number.
+                if !number.hasPrefix("+") {
+                    if number.count == 11 && number.hasPrefix("1") {
+                        number = "+" + number
+                    } else if number.count == 10 {
+                        number = "+1" + number
+                    }
+                }
+                
+                return number
+            }
+            .filter { number in
+                let pattern = #"^\+[1-9]\d{7,14}$"#
+                return number.range(of: pattern, options: .regularExpression) != nil
+            }
         
         return numbers
     }
