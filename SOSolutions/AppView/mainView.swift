@@ -140,7 +140,7 @@ struct mainView: View {
             // Number Selector
             ScrollViewReader { proxy in
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 30) {
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Select Number to Call:")
                                 .fontWeight(.semibold)
@@ -160,7 +160,6 @@ struct mainView: View {
                         }
                         
                         if isUsingCustomNumber {
-                          
                             TextField("Enter number, e.g. +15185551234", text: $customPhoneNumber)
                                 .id(customFieldID)
                                 .keyboardType(.phonePad)
@@ -169,7 +168,7 @@ struct mainView: View {
                                 .foregroundStyle(Color.primary)
                                 .tint(Color.blue)
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
+                                .background(Color.white)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.gray.opacity(0.4), lineWidth: 1)
