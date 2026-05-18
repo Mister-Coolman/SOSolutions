@@ -34,6 +34,7 @@ struct ChatViewTest: View {
     // Transcription accumulation
     @State private var currentTranscript: String = ""
     @State private var lastStableTranscript: String = ""
+    @State private var lastCommitTime: Date? = nil
     @State private var silenceTimer: Timer?
 
     // Speaking state from VoIP manager
@@ -420,8 +421,20 @@ struct ChatViewTest: View {
             return
         }
 
-        messages.append(Message(text: cleaned, isUser: false))
+        let now = Date()
+        if let lastIdx = messages.indices.last,
+           !messages[lastIdx].isUser,
+           let lastCommit = lastCommitTime,
+           now.timeIntervalSince(lastCommit) < 3.0 {
+            messages[lastIdx].text += " " + cleaned
+            messages[lastIdx].simpleText = nil
+            messages[lastIdx].showSimple = false
+        } else {
+            messages.append(Message(text: cleaned, isUser: false))
+        }
+
         lastStableTranscript = cleaned
+        lastCommitTime = now
         currentTranscript = ""
     }
 
