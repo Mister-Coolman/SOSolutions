@@ -2,6 +2,7 @@ import SwiftUI
 import TwilioVoice
 import PhotosUI
 import RegexBuilder
+import CoreLocation
 
 struct Message: Identifiable, Equatable {
     let id = UUID()
@@ -16,6 +17,7 @@ struct ChatViewTest: View {
     @Binding var callNumber: String
 
     @StateObject private var voiceManager = TwilioVoiceManager()
+    @StateObject private var locationManager = LocationManager()
 
     @State private var messages: [Message] = []
     @State private var inputText: String = ""
@@ -390,10 +392,25 @@ struct ChatViewTest: View {
             }
         }
 
+        voiceManager.introCallerNumber = loadCallerNumber()
+        locationManager.requestLocation { address in
+            voiceManager.introLocation = address
+        }
+
         voiceManager.fetchToken {
             isStartingCall = false
             voiceManager.makeCall(to: callNumber)
         }
+    }
+
+    private func loadCallerNumber() -> String {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("medicalProfile.json")
+        guard let data = try? Data(contentsOf: url),
+              let profile = try? JSONDecoder().decode(MedicalProfile.self, from: data) else {
+            return ""
+        }
+        return profile.phoneNumber
     }
 
     // MARK: - Commit transcript as a new message bubble

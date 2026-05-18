@@ -8,6 +8,8 @@
 	<string>$(PHONE_NUMBERS)</string>
 	<key>TOKEN_ENDPOINT</key>
 	<string>$(TOKEN_ENDPOINT)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is shared with the 911 dispatcher to help them locate you quickly.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>voip</string>
