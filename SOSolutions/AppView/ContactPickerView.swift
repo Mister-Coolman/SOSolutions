@@ -51,7 +51,7 @@ struct ContactPickerRepresentable: UIViewControllerRepresentable {
         }
 
         func contactPicker(_ picker: CNContactPickerViewController,
-                           didSelectContactProperty contactProperty: CNContactProperty) {
+                           didSelect contactProperty: CNContactProperty) {
             guard let phoneNumber = contactProperty.value as? CNPhoneNumber else { return }
             let normalized = SecretsHelper.normalizeToE164(phoneNumber.stringValue)
                 ?? phoneNumber.stringValue
