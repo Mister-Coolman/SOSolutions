@@ -18,6 +18,7 @@ struct mainView: View {
     @Binding var callNumber: String
     
     @FocusState private var isCustomNumberFocused: Bool
+    @State private var showContactPicker = false
 
     let phoneNumbers = SecretsHelper.getPhoneNumbers()
     private let customOption = "Custom Number"
@@ -36,12 +37,18 @@ struct mainView: View {
     }
     
     private var normalizedCallNumber: String {
-        effectiveCallNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        SecretsHelper.normalizeToE164(effectiveCallNumber)
+            ?? effectiveCallNumber.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
+
     private var isValidCallNumber: Bool {
-        let pattern = #"^\+[1-9]\d{7,14}$"#
-        return normalizedCallNumber.range(of: pattern, options: .regularExpression) != nil
+        SecretsHelper.normalizeToE164(effectiveCallNumber) != nil
+    }
+
+    // True when the field has valid content that differs from its E.164 form —
+    // i.e. the user typed "5185551234" and we'll convert it to "+15185551234".
+    private var needsNormalizationPreview: Bool {
+        isUsingCustomNumber && isValidCallNumber && customPhoneNumber != normalizedCallNumber
     }
     
     var body: some View {
@@ -174,6 +181,28 @@ struct mainView: View {
                             }
                             .buttonStyle(.plain)
                         }
+
+                        // Contacts picker chip
+                        Button {
+                            showContactPicker = true
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "person.crop.circle")
+                                    .font(.system(size: 13, weight: .medium))
+                                Text("Contacts")
+                                    .font(.system(size: 15, weight: .medium))
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color(.secondarySystemBackground))
+                            .foregroundStyle(Color.accentColor)
+                            .clipShape(Capsule())
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.accentColor.opacity(0.4), lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                     .padding(.horizontal)
                 }
@@ -201,9 +230,14 @@ struct mainView: View {
                             .focused($isCustomNumberFocused)
 
                         if !customPhoneNumber.isEmpty && !isValidCallNumber {
-                            Text("Use full format like +15185551234")
+                            Text("Enter a valid phone number")
                                 .font(.caption)
                                 .foregroundStyle(.red)
+                                .padding(.horizontal, 4)
+                        } else if needsNormalizationPreview {
+                            Text("Will dial: \(normalizedCallNumber)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                                 .padding(.horizontal, 4)
                         }
                     }
@@ -252,10 +286,20 @@ struct mainView: View {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
                 Button("Done") {
+                    if let normalized = SecretsHelper.normalizeToE164(customPhoneNumber) {
+                        customPhoneNumber = normalized
+                    }
                     isCustomNumberFocused = false
                 }
             }
         }
+        .background(
+            ContactPickerRepresentable(isPresented: $showContactPicker) { number in
+                customPhoneNumber = number
+                selectedNumberOption = customOption
+            }
+            .frame(width: 0, height: 0)
+        )
         .sheet(isPresented: $showMedicalHistory) {
             MedicalHistoryView()
         }

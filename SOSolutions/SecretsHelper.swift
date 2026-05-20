@@ -8,6 +8,32 @@
 import Foundation
 
 struct SecretsHelper {
+
+    // Converts any common phone number format to E.164 (e.g. "(518) 555-1234" → "+15185551234").
+    // Returns nil if the result isn't a plausible E.164 number.
+    static func normalizeToE164(_ input: String) -> String? {
+        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        let hasPlus = trimmed.hasPrefix("+")
+        let digits = trimmed.filter { $0.isNumber }
+
+        var candidate: String
+        if hasPlus {
+            candidate = "+" + digits
+        } else if digits.count == 10 {
+            candidate = "+1" + digits          // assume US
+        } else if digits.count == 11 && digits.hasPrefix("1") {
+            candidate = "+" + digits           // US with country code
+        } else {
+            candidate = digits                 // leave bare for validation
+        }
+
+        let pattern = #"^\+[1-9]\d{7,14}$"#
+        guard candidate.range(of: pattern, options: .regularExpression) != nil else {
+            return nil
+        }
+        return candidate
+    }
+
     static func getPhoneNumbers() -> [String] {
         guard let numbersString = Bundle.main.object(forInfoDictionaryKey: "PHONE_NUMBERS") as? String else {
             print("PHONE_NUMBERS not found in Info.plist")
@@ -16,28 +42,7 @@ struct SecretsHelper {
         
         let numbers = numbersString
             .components(separatedBy: ",")
-            .map { rawNumber in
-                var number = rawNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-                
-                // Remove spaces, dashes, parentheses, etc.
-                number = number.filter { $0.isNumber || $0 == "+" }
-                
-                // If the + was stripped but the number starts with 1 and has 11 digits,
-                // restore it as a US E.164 number.
-                if !number.hasPrefix("+") {
-                    if number.count == 11 && number.hasPrefix("1") {
-                        number = "+" + number
-                    } else if number.count == 10 {
-                        number = "+1" + number
-                    }
-                }
-                
-                return number
-            }
-            .filter { number in
-                let pattern = #"^\+[1-9]\d{7,14}$"#
-                return number.range(of: pattern, options: .regularExpression) != nil
-            }
+            .compactMap { normalizeToE164($0) }
         
         return numbers
     }
