@@ -18,6 +18,7 @@ struct mainView: View {
     @Binding var callNumber: String
     
     @FocusState private var isCustomNumberFocused: Bool
+    @State private var showContactPicker = false
 
     let phoneNumbers = SecretsHelper.getPhoneNumbers()
     private let customOption = "Custom Number"
@@ -36,12 +37,18 @@ struct mainView: View {
     }
     
     private var normalizedCallNumber: String {
-        effectiveCallNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        SecretsHelper.normalizeToE164(effectiveCallNumber)
+            ?? effectiveCallNumber.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
+
     private var isValidCallNumber: Bool {
-        let pattern = #"^\+[1-9]\d{7,14}$"#
-        return normalizedCallNumber.range(of: pattern, options: .regularExpression) != nil
+        SecretsHelper.normalizeToE164(effectiveCallNumber) != nil
+    }
+
+    // True when the field has valid content that differs from its E.164 form —
+    // i.e. the user typed "5185551234" and we'll convert it to "+15185551234".
+    private var needsNormalizationPreview: Bool {
+        isUsingCustomNumber && isValidCallNumber && customPhoneNumber != normalizedCallNumber
     }
     
     var body: some View {
@@ -137,70 +144,108 @@ struct mainView: View {
             
             Spacer()
             
-            // Number Selector
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("Select Number to Call:")
-                                .fontWeight(.semibold)
-                            
-                            Spacer()
-                            
-                            Picker("Phone Number", selection: $selectedNumberOption) {
-                                ForEach(allNumberOptions, id: \.self) { number in
-                                    Text(number).tag(number)
+            // Number Selector — chips
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Call number")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(allNumberOptions, id: \.self) { option in
+                            let isSelected = selectedNumberOption == option
+                            Button {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    selectedNumberOption = option
                                 }
-                            }
-                            .pickerStyle(.menu)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(20)
-                        }
-                        
-                        if isUsingCustomNumber {
-                            TextField("Enter number, e.g. +15185551234", text: $customPhoneNumber)
-                                .id(customFieldID)
-                                .keyboardType(.phonePad)
-                                .textContentType(.telephoneNumber)
-                                .font(.title3)
-                                .foregroundStyle(Color.primary)
-                                .tint(Color.blue)
-                                .padding()
-                                .background(Color.white)
+                            } label: {
+                                HStack(spacing: 6) {
+                                    if option == customOption {
+                                        Image(systemName: "pencil")
+                                            .font(.system(size: 13, weight: .medium))
+                                    }
+                                    Text(option == customOption ? "Custom" : option)
+                                        .font(.system(size: 15, weight: .medium))
+                                        .lineLimit(1)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(isSelected ? Color.accentColor : Color(.secondarySystemBackground))
+                                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                                .clipShape(Capsule())
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                                    Capsule()
+                                        .stroke(isSelected ? Color.clear : Color.gray.opacity(0.3), lineWidth: 1)
                                 )
-                                .cornerRadius(16)
-                                .focused($isCustomNumberFocused)
-                            
-                            if !customPhoneNumber.isEmpty && !isValidCallNumber {
-                                Text("Use full format like +15185551234")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.red)
                             }
+                            .buttonStyle(.plain)
+                        }
+
+                        // Contacts picker chip
+                        Button {
+                            showContactPicker = true
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "person.crop.circle")
+                                    .font(.system(size: 13, weight: .medium))
+                                Text("Contacts")
+                                    .font(.system(size: 15, weight: .medium))
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color(.secondarySystemBackground))
+                            .foregroundStyle(Color.accentColor)
+                            .clipShape(Capsule())
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.accentColor.opacity(0.4), lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal)
+                }
+
+                if isUsingCustomNumber {
+                    VStack(alignment: .leading, spacing: 6) {
+                        TextField("e.g. +15185551234", text: $customPhoneNumber)
+                            .id(customFieldID)
+                            .keyboardType(.phonePad)
+                            .textContentType(.telephoneNumber)
+                            .font(.title3)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(Color(.secondarySystemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(
+                                        !customPhoneNumber.isEmpty && !isValidCallNumber
+                                            ? Color.red.opacity(0.6)
+                                            : Color.gray.opacity(0.2),
+                                        lineWidth: 1
+                                    )
+                            )
+                            .focused($isCustomNumberFocused)
+
+                        if !customPhoneNumber.isEmpty && !isValidCallNumber {
+                            Text("Enter a valid phone number")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                                .padding(.horizontal, 4)
+                        } else if needsNormalizationPreview {
+                            Text("Will dial: \(normalizedCallNumber)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
                         }
                     }
-                    .padding()
-                    .padding(.bottom, isCustomNumberFocused ? 260 : 0)
-                }
-                .frame(maxHeight: isUsingCustomNumber ? 190 : 85)
-                .scrollIndicators(.hidden)
-                .onChange(of: isCustomNumberFocused) { _, focused in
-                    if focused {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            withAnimation {
-                                proxy.scrollTo(customFieldID, anchor: .center)
-                            }
-                        }
-                    }
-                }
-                .onAppear {
-                    proxy.scrollTo("top", anchor: .top)
+                    .padding(.horizontal)
+                    .transition(.move(edge: .top).combined(with: .opacity))
                 }
             }
+            .padding(.bottom, 16)
             
             Rectangle()
                 .frame(height: 2)
@@ -241,10 +286,20 @@ struct mainView: View {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
                 Button("Done") {
+                    if let normalized = SecretsHelper.normalizeToE164(customPhoneNumber) {
+                        customPhoneNumber = normalized
+                    }
                     isCustomNumberFocused = false
                 }
             }
         }
+        .background(
+            ContactPickerRepresentable(isPresented: $showContactPicker) { number in
+                customPhoneNumber = number
+                selectedNumberOption = customOption
+            }
+            .frame(width: 0, height: 0)
+        )
         .sheet(isPresented: $showMedicalHistory) {
             MedicalHistoryView()
         }

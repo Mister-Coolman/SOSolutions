@@ -12,7 +12,8 @@ import SwiftUI
 struct MedicalProfile: Codable, Equatable {
     var name: String = ""
     var dateOfBirth: Date = Date()
-    
+    var phoneNumber: String = ""
+
     var addresses: [Address] = []
     var medications: [Medication] = []
     var allergies: [String] = []
@@ -47,6 +48,9 @@ struct MedicalHistoryView: View {
                 Section("Basic Information") {
                     TextField("Full Name", text: $profile.name)
                     DatePicker("Date of Birth", selection: $profile.dateOfBirth, displayedComponents: .date)
+                    TextField("Callback Phone Number (e.g. +15185551234)", text: $profile.phoneNumber)
+                        .keyboardType(.phonePad)
+                        .textContentType(.telephoneNumber)
                 }
                 
                 

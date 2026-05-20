@@ -12,6 +12,7 @@
 	<array>
 		<string>voip</string>
 		<string>audio</string>
+		<string>nearby-interaction</string>
 	</array>
 </dict>
 </plist>

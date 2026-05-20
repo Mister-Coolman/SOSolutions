@@ -30,6 +30,9 @@ final class TwilioVoiceManager: NSObject, ObservableObject, CallDelegate, Notifi
     private var pendingPhoneNumber: String?
     private var identity: String?
 
+    var introCallerNumber: String = ""
+    var introLocation: String = ""
+
     // MARK: - Server configuration
     // Replace with your real server base URL
     private let serverBase = "https://sosolutions-server-production.up.railway.app"
@@ -173,7 +176,9 @@ final class TwilioVoiceManager: NSObject, ObservableObject, CallDelegate, Notifi
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONSerialization.data(withJSONObject: [
             "sessionId": sessionId,
-            "to": phoneNumber
+            "to": phoneNumber,
+            "callerNumber": introCallerNumber,
+            "location": introLocation
         ])
 
         URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
