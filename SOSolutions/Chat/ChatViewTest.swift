@@ -69,6 +69,9 @@ struct ChatViewTest: View {
             guard !hasStartedCall else { return }
             hasStartedCall = true
             startCall()
+            // Preload the on-device model in the background so it's ready
+            // before the user taps a message to simplify.
+            Task { try? await llm.load() }
         }
         .onDisappear {
             silenceTimer?.invalidate()
