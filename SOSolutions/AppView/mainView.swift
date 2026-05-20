@@ -137,70 +137,81 @@ struct mainView: View {
             
             Spacer()
             
-            // Number Selector
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("Select Number to Call:")
-                                .fontWeight(.semibold)
-                            
-                            Spacer()
-                            
-                            Picker("Phone Number", selection: $selectedNumberOption) {
-                                ForEach(allNumberOptions, id: \.self) { number in
-                                    Text(number).tag(number)
+            // Number Selector — chips
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Call number")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(allNumberOptions, id: \.self) { option in
+                            let isSelected = selectedNumberOption == option
+                            Button {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) {
+                                    selectedNumberOption = option
                                 }
-                            }
-                            .pickerStyle(.menu)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(20)
-                        }
-                        
-                        if isUsingCustomNumber {
-                            TextField("Enter number, e.g. +15185551234", text: $customPhoneNumber)
-                                .id(customFieldID)
-                                .keyboardType(.phonePad)
-                                .textContentType(.telephoneNumber)
-                                .font(.title3)
-                                .foregroundStyle(Color.primary)
-                                .tint(Color.blue)
-                                .padding()
-                                .background(Color.white)
+                            } label: {
+                                HStack(spacing: 6) {
+                                    if option == customOption {
+                                        Image(systemName: "pencil")
+                                            .font(.system(size: 13, weight: .medium))
+                                    }
+                                    Text(option == customOption ? "Custom" : option)
+                                        .font(.system(size: 15, weight: .medium))
+                                        .lineLimit(1)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(isSelected ? Color.accentColor : Color(.secondarySystemBackground))
+                                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                                .clipShape(Capsule())
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                                    Capsule()
+                                        .stroke(isSelected ? Color.clear : Color.gray.opacity(0.3), lineWidth: 1)
                                 )
-                                .cornerRadius(16)
-                                .focused($isCustomNumberFocused)
-                            
-                            if !customPhoneNumber.isEmpty && !isValidCallNumber {
-                                Text("Use full format like +15185551234")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.red)
                             }
+                            .buttonStyle(.plain)
                         }
                     }
-                    .padding()
-                    .padding(.bottom, isCustomNumberFocused ? 260 : 0)
+                    .padding(.horizontal)
                 }
-                .frame(maxHeight: isUsingCustomNumber ? 190 : 85)
-                .scrollIndicators(.hidden)
-                .onChange(of: isCustomNumberFocused) { _, focused in
-                    if focused {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            withAnimation {
-                                proxy.scrollTo(customFieldID, anchor: .center)
-                            }
+
+                if isUsingCustomNumber {
+                    VStack(alignment: .leading, spacing: 6) {
+                        TextField("e.g. +15185551234", text: $customPhoneNumber)
+                            .id(customFieldID)
+                            .keyboardType(.phonePad)
+                            .textContentType(.telephoneNumber)
+                            .font(.title3)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(Color(.secondarySystemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(
+                                        !customPhoneNumber.isEmpty && !isValidCallNumber
+                                            ? Color.red.opacity(0.6)
+                                            : Color.gray.opacity(0.2),
+                                        lineWidth: 1
+                                    )
+                            )
+                            .focused($isCustomNumberFocused)
+
+                        if !customPhoneNumber.isEmpty && !isValidCallNumber {
+                            Text("Use full format like +15185551234")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                                .padding(.horizontal, 4)
                         }
                     }
-                }
-                .onAppear {
-                    proxy.scrollTo("top", anchor: .top)
+                    .padding(.horizontal)
+                    .transition(.move(edge: .top).combined(with: .opacity))
                 }
             }
+            .padding(.bottom, 16)
             
             Rectangle()
                 .frame(height: 2)
