@@ -8,14 +8,11 @@
 	<string>$(PHONE_NUMBERS)</string>
 	<key>TOKEN_ENDPOINT</key>
 	<string>$(TOKEN_ENDPOINT)</string>
-	<key>NSContactsUsageDescription</key>
-	<string>SOSolutions uses your contacts so you can quickly select a number to call.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is shared with the 911 dispatcher to help them locate you quickly.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>voip</string>
 		<string>audio</string>
+		<string>nearby-interaction</string>
 	</array>
 </dict>
 </plist>
