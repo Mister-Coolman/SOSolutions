@@ -34,7 +34,7 @@ class LLMEvaluator {
     func load() async throws -> ModelContainer {
         switch loadState {
         case .idle:
-
+            print("LLM: load() — fetching model '\(modelConfiguration.name)' from HuggingFace…")
             let modelContainer = try await LLMModelFactory.shared.loadContainer(
                 configuration: modelConfiguration
             ) {
@@ -42,6 +42,7 @@ class LLMEvaluator {
                 Task { @MainActor in
                     self.modelInfo =
                         "Downloading \(modelConfiguration.name): \(Int(progress.fractionCompleted * 100))%"
+                    print("LLM: download progress \(Int(progress.fractionCompleted * 100))%")
                 }
             }
             let numParams = await modelContainer.perform { context in
@@ -51,18 +52,24 @@ class LLMEvaluator {
             self.modelInfo =
                 "Loaded \(modelConfiguration.id).  Weights: \(numParams / (1024*1024))M"
             loadState = .loaded(modelContainer)
+            print("LLM: model loaded successfully (\(numParams / (1024*1024))M params)")
             return modelContainer
 
         case .loaded(let modelContainer):
+            print("LLM: model already loaded, returning cached container")
             return modelContainer
         }
     }
 
     func generate(prompt: String, type: Int) async {
-        guard !running else { return }
-        
+        guard !running else {
+            print("LLM: already running — skipping generate (model may be stuck loading)")
+            return
+        }
+
         running = true
         self.output = ""
+        print("LLM: generate() started")
 
         let systemPrompt: String = """
             You will simplify 911 dispatcher messages so that they are clear and easy to read (about 4th grade level, 740L–940L).
@@ -149,8 +156,10 @@ class LLMEvaluator {
             if result.output != self.output {
                 self.output = result.output
             }
+            print("LLM: generation complete — output length: \(self.output.count) chars")
 
         } catch {
+            print("LLM: error — \(error)")
             output = "Failed: \(error)"
         }
 

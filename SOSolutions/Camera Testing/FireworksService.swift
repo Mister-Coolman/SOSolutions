@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct FireworksService {
-    private static let modelName = "accounts/fireworks/models/qwen3-vl-30b-a3b-instruct"
+    private static let modelName = "accounts/fireworks/models/qwen3p6-plus"
     
     static func analyzeImage(_ image: UIImage) async throws -> [String] {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
@@ -65,17 +65,29 @@ struct FireworksService {
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
         
         let (data, response) = try await URLSession.shared.data(for: request)
-        
+
+        // Log raw response to help diagnose format issues
+        if let raw = String(data: data, encoding: .utf8) {
+            print("Fireworks raw response: \(raw.prefix(800))")
+        }
+
         guard let httpResponse = response as? HTTPURLResponse,
               200...299 ~= httpResponse.statusCode else {
             throw NSError(domain: "FireworksService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from API."])
         }
-        
-        let decoded = try JSONDecoder().decode(FireworksResponse.self, from: data)
-        
-        let text = decoded.choices.first?.message.content ?? "No text available."
-        
-        return parseDescriptions(from: text)
+
+        do {
+            let decoded = try JSONDecoder().decode(FireworksResponse.self, from: data)
+            let text = decoded.choices.first?.message.content ?? ""
+            guard !text.isEmpty else {
+                print("Fireworks: decoded OK but content is nil/empty")
+                throw NSError(domain: "FireworksService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Empty response content."])
+            }
+            return parseDescriptions(from: text)
+        } catch {
+            print("Fireworks decode error: \(error)")
+            throw error
+        }
     }
     
     private static func parseDescriptions(from text: String) -> [String] {
@@ -100,5 +112,5 @@ struct Choice: Codable {
 }
 
 struct Msg: Codable {
-    let content: String
+    let content: String?   // optional — Qwen3 thinking mode can return null
 }

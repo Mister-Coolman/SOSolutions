@@ -516,18 +516,29 @@ struct ChatViewTest: View {
             return
         }
 
-        if let simpleText = message.wrappedValue.simpleText, !simpleText.isEmpty {
+        if let simpleText = message.wrappedValue.simpleText,
+           !simpleText.isEmpty,
+           simpleText != "Simplifying…" {
             message.wrappedValue.showSimple = true
             return
         }
 
+        // Show immediate feedback so it's clear the tap registered
+        message.wrappedValue.simpleText = "Simplifying…"
+        message.wrappedValue.showSimple = true
+
         let originalText = message.wrappedValue.text
+        print("LLM: tap registered — requesting simplification")
         Task {
             await llm.generate(prompt: originalText, type: 0)
             let output = llm.output.trimmingCharacters(in: .whitespacesAndNewlines)
             await MainActor.run {
-                guard !output.isEmpty else { return }
-                message.wrappedValue.simpleText = output
+                if output.isEmpty {
+                    print("LLM: output empty after generate — model likely stuck or not supported")
+                    message.wrappedValue.simpleText = "Unable to simplify (tap to retry)"
+                } else {
+                    message.wrappedValue.simpleText = output
+                }
                 message.wrappedValue.showSimple = true
             }
         }
