@@ -272,6 +272,7 @@ struct ChatViewTest: View {
                 isComposerFocused = true
             } label: {
                 Text(descriptions[currentIndex])
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(.primary)
