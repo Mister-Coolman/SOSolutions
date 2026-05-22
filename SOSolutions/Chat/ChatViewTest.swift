@@ -380,7 +380,7 @@ struct ChatViewTest: View {
                     return
                 }
 
-                silenceTimer = Timer.scheduledTimer(withTimeInterval: 1.75, repeats: false) { _ in
+                silenceTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
                     commitTranscript(force: false)
                 }
                 if let silenceTimer {
@@ -445,8 +445,25 @@ struct ChatViewTest: View {
         if let lastIdx = messages.indices.last,
            !messages[lastIdx].isUser,
            let lastCommit = lastCommitTime,
-           now.timeIntervalSince(lastCommit) < 3.0 {
-            messages[lastIdx].text += " " + cleaned
+           now.timeIntervalSince(lastCommit) < 5.0 {
+
+            let existing = messages[lastIdx].text
+            let existingNorm = existing.lowercased().trimmingCharacters(in: .whitespaces)
+            let cleanedNorm  = cleaned.lowercased()
+
+            if cleanedNorm.hasPrefix(existingNorm) {
+                // New text is an extension of existing — replace rather than append
+                // e.g. "Do you have money" → "Do you have money in the account?"
+                messages[lastIdx].text = cleaned
+            } else if existingNorm.hasPrefix(cleanedNorm) {
+                // Existing is already a superset — skip this duplicate chunk
+                lastStableTranscript = cleaned
+                currentTranscript    = ""
+                return
+            } else {
+                // Genuinely new content — append
+                messages[lastIdx].text += " " + cleaned
+            }
             messages[lastIdx].simpleText = nil
             messages[lastIdx].showSimple = false
         } else {
