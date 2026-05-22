@@ -37,6 +37,7 @@ struct FireworksService {
         let requestBody: [String: Any] = [
             "model": modelName,
             "max_tokens": 400,
+            "enable_thinking": false,   // disable Qwen3 thinking mode so response lands in content
             "messages": [
                 [
                     "role": "user",
@@ -78,9 +79,10 @@ struct FireworksService {
 
         do {
             let decoded = try JSONDecoder().decode(FireworksResponse.self, from: data)
-            let text = decoded.choices.first?.message.content ?? ""
+            let msg = decoded.choices.first?.message
+            let text = msg?.content ?? msg?.reasoning_content ?? ""
             guard !text.isEmpty else {
-                print("Fireworks: decoded OK but content is nil/empty")
+                print("Fireworks: decoded OK but both content and reasoning_content are nil/empty")
                 throw NSError(domain: "FireworksService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Empty response content."])
             }
             return parseDescriptions(from: text)
@@ -112,5 +114,6 @@ struct Choice: Codable {
 }
 
 struct Msg: Codable {
-    let content: String?   // optional — Qwen3 thinking mode can return null
+    let content: String?            // null when Qwen3 thinking mode is active
+    let reasoning_content: String?  // fallback — Qwen3 puts output here in thinking mode
 }
