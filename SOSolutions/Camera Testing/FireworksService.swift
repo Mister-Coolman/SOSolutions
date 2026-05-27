@@ -20,26 +20,22 @@ struct FireworksService {
 
         let url = URL(string: "https://sosolutions-server-production.up.railway.app/fireworks/chat")!
 
-        // System message: strict role + output format
-        let systemPrompt = """
+        let prompt = """
             You are an emergency image analyst for deaf and hard-of-hearing 911 callers. \
-            Your only job is to convert an image into exactly 3 numbered emergency descriptions for a dispatcher.
+            Analyze the image and return EXACTLY 3 numbered descriptions for a 911 dispatcher.
 
-            ABSOLUTE OUTPUT RULES:
-            - Your response must begin IMMEDIATELY with "1." — no title, no intro, no meta-commentary, no explanation
-            - Write exactly 3 lines total, numbered 1, 2, 3
-            - Each line is one self-contained description, 25–30 words
-            - Cover ALL critical details: injury type/location/severity/blood loss, hazards, threats to life
-            - Each line must reword the same facts differently — not identical, not redundant
-            - If you are less than 70% confident about something, use "possibly" — never fabricate
-            - Nothing may appear in your response before "1." or after the end of line 3
-            """
+            STRICT OUTPUT FORMAT — your entire response must be:
+            1. [description]
+            2. [description]
+            3. [description]
 
-        // User message: concise task + image
-        let userPrompt = """
-            Describe every critical emergency detail visible in this image. \
-            Include: injury type, body location, severity, estimated blood loss, \
-            any environmental hazards, and any other life-threatening conditions.
+            Begin your response immediately with "1." — no title, no intro, no explanation before it.
+            Nothing after line 3.
+
+            Rules for each description (25–30 words each):
+            - Cover ALL critical details visible: injury type, body location, severity, blood loss, hazards, threats to life
+            - Each line must reword the same facts differently — varied phrasing, same information
+            - If less than 70% confident about something, write "possibly" — never fabricate details
             """
 
         let requestBody: [String: Any] = [
@@ -47,15 +43,11 @@ struct FireworksService {
             "max_tokens": 300,
             "messages": [
                 [
-                    "role": "system",
-                    "content": systemPrompt
-                ],
-                [
                     "role": "user",
                     "content": [
                         [
                             "type": "text",
-                            "text": userPrompt
+                            "text": prompt
                         ],
                         [
                             "type": "image_url",
