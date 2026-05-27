@@ -45,7 +45,6 @@ struct FireworksService {
         let requestBody: [String: Any] = [
             "model": modelName,
             "max_tokens": 300,
-            "enable_thinking": false,
             "messages": [
                 [
                     "role": "system",
