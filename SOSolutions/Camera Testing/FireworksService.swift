@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct FireworksService {
-    private static let modelName = "accounts/fireworks/models/kimi-k2p6"
+    private static let modelName = "accounts/fireworks/models/qwen3p6-plus"
 
     static func analyzeImage(_ image: UIImage) async throws -> [String] {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
@@ -21,26 +21,26 @@ struct FireworksService {
         let url = URL(string: "https://sosolutions-server-production.up.railway.app/fireworks/chat")!
 
         let prompt = """
-            You are an emergency image analyst for deaf and hard-of-hearing 911 callers. \
-            Analyze the image and return EXACTLY 3 numbered descriptions for a 911 dispatcher.
+            You are responsible for conveying critical information to a 911 dispatcher. You are facilitating communication between members of the deaf community and emergency services. When a user takes an image of their surroundings or other critical information pertaining to the situation, your role is to translate the visual information into text in a manner that is relevant, precise, and does not lose meaning.
 
-            STRICT OUTPUT FORMAT — your entire response must be:
-            1. [description]
-            2. [description]
-            3. [description]
+            Important rules to follow:
 
-            Begin your response immediately with "1." — no title, no intro, no explanation before it.
-            Nothing after line 3.
+            Focus and understand the image taken by the user, and record ALL critical information pertaining to it (for example, if the image taken is of a laceration, critical information to record should be approximate laceration depth, height, placement, blood-loss level, etc.)
 
-            Rules for each description (25–30 words each):
-            - Cover ALL critical details visible: injury type, body location, severity, blood loss, hazards, threats to life
-            - Each line must reword the same facts differently — varied phrasing, same information
-            - If less than 70% confident about something, write "possibly" — never fabricate details
+            If unsure (<70% confident) about the identity of an object, do not lie or hallucinate, say you are unsure. The goal of this prompt is to ensure the safety of the user in life-or-death scenarios.
+
+            Return ONLY a numbered list of three descriptions that follow the guidelines listed above exactly. Each description should adhere to all of the guidelines, but they must use different wording. Do not return three identical statements. Do not return statements that do not contain all critical medical, environmental, and social information that pose a threat to the user.
+            
+            Limit each explanation to 25-30 words. The most important thing is to ensure that all information returned is accurate. Do NOT lie at all. 
             """
-
+        
         let requestBody: [String: Any] = [
             "model": modelName,
-            "max_tokens": 300,
+            "max_tokens": 400,
+            // Qwen 3.6 Plus: disable internal thinking so the response is the
+            // final answer only, not a chain-of-thought preamble.
+            "enable_thinking": false,
+            "reasoning_effort": "none",
             "messages": [
                 [
                     "role": "user",
@@ -58,42 +58,28 @@ struct FireworksService {
                     ]
                 ]
             ],
-            "temperature": 0.3
+            "temperature": 0.5
         ]
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 60
-
+        
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
-
+        
         let (data, response) = try await URLSession.shared.data(for: request)
-
-        // Log raw response for debugging
-        if let raw = String(data: data, encoding: .utf8) {
-            print("Fireworks raw response: \(raw.prefix(800))")
-        }
-
+        
         guard let httpResponse = response as? HTTPURLResponse,
               200...299 ~= httpResponse.statusCode else {
-            throw NSError(domain: "FireworksService", code: 0,
-                          userInfo: [NSLocalizedDescriptionKey: "Invalid response from API."])
+            throw NSError(domain: "FireworksService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid response from API."])
         }
-
-        do {
-            let decoded = try JSONDecoder().decode(FireworksResponse.self, from: data)
-            let msg = decoded.choices.first?.message
-            let text = msg?.content ?? msg?.reasoning_content ?? ""
-            guard !text.isEmpty else {
-                throw NSError(domain: "FireworksService", code: 1,
-                              userInfo: [NSLocalizedDescriptionKey: "Empty response content."])
-            }
-            return parseDescriptions(from: text)
-        } catch {
-            print("Fireworks decode error: \(error)")
-            throw error
-        }
+        
+        let decoded = try JSONDecoder().decode(FireworksResponse.self, from: data)
+        
+        let text = decoded.choices.first?.message.content ?? "No text available."
+        
+        return parseDescriptions(from: text)
     }
 
     private static func parseDescriptions(from text: String) -> [String] {
