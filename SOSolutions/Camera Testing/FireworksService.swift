@@ -93,12 +93,16 @@ struct FireworksService {
         let numbered = lines.filter { $0.first?.isNumber == true }
         let source = numbered.isEmpty ? lines : numbered
 
+        // Prefix each description with a disclaimer so the dispatcher knows
+        // the message is AI-generated from a caller-taken image.
+        let disclaimer = "AI-generated description of caller's image: "
+
         return source
             .map { $0.replacingOccurrences(of: #"^\d+[.)\s]+\s*"#, with: "",
                                            options: .regularExpression) }
             .filter { !$0.isEmpty }
             .prefix(3)
-            .map { String($0) }
+            .map { disclaimer + String($0) }
     }
 }
 
