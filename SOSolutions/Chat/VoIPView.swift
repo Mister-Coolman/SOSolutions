@@ -40,6 +40,7 @@ final class TwilioVoiceManager: NSObject, ObservableObject, CallDelegate, Notifi
     private var tokenEndpoint: String { "\(serverBase)/token" }
     private var startSessionEndpoint: String { "\(serverBase)/start-session" }
     private var speakEndpoint: String { "\(serverBase)/speak" }
+    private var endCallEndpoint: String { "\(serverBase)/end-call" }
 
     // MARK: - Token Fetch
     func fetchToken(completion: (() -> Void)? = nil) {
@@ -130,6 +131,44 @@ final class TwilioVoiceManager: NSObject, ObservableObject, CallDelegate, Notifi
         isMuted = false
         disconnectWebSocket()
         updateStatus("Call ended", color: .gray)
+    }
+
+    // MARK: - Graceful Hang Up
+    // Asks the server to play a goodbye TTS to the dispatcher (with callback
+    // number) before disconnecting. Waits for the 'call-ending' WS message,
+    // then calls hangUp(). Falls back to immediate hangUp on failure or timeout.
+    func gracefulHangUp() {
+        guard let sessionId = currentSessionId,
+              let url = URL(string: endCallEndpoint) else {
+            hangUp()
+            return
+        }
+
+        updateStatus("Ending call…", color: .orange)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: [
+            "sessionId": sessionId
+        ])
+
+        URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
+            if let error {
+                print("end-call request failed: \(error.localizedDescription)")
+                DispatchQueue.main.async { self?.hangUp() }
+            }
+            // On success, wait for the 'call-ending' WS message
+        }.resume()
+
+        // Safety net: hang up after 45s even if the WS message never arrives
+        DispatchQueue.main.asyncAfter(deadline: .now() + 45) { [weak self] in
+            guard let self else { return }
+            if self.isConnected {
+                print("Graceful hangup timeout — disconnecting")
+                self.hangUp()
+            }
+        }
     }
 
     // MARK: - Mute
@@ -320,6 +359,13 @@ final class TwilioVoiceManager: NSObject, ObservableObject, CallDelegate, Notifi
                 if event == "registered" {
                     self.updateStatus("Session ready", color: .green)
                 }
+            }
+        }
+
+        if type == "call-ending" {
+            // Server finished playing the goodbye TTS — safe to disconnect now.
+            DispatchQueue.main.async {
+                self.hangUp()
             }
         }
     }

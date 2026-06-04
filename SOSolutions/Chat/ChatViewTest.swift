@@ -95,7 +95,7 @@ struct ChatViewTest: View {
                     withAnimation(.easeInOut) {
                         inChat = false
                     }
-                    voiceManager.hangUp()
+                    voiceManager.gracefulHangUp()
                 } label: {
                     Image(systemName: "phone.down.fill")
                         .font(.system(size: 20, weight: .semibold))
